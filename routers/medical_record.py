@@ -42,4 +42,7 @@ def delete_medical_record(medical_record_id: int, db: Session = Depends(get_db))
     db_medical_record = crud_medical_record.get_medical_record(db, medical_record_id)
     if db_medical_record is None:
         raise HTTPException(status_code=404, detail="Medical Record not found")
+    db_medical_child=crud_medical_record.check_medical_child(db,medical_record_id)
+    if db_medical_child is True:
+        raise HTTPException(status_code=404,detail="Medical Child Exist")
     return crud_medical_record.delete_medical_record(db, medical_record_id)

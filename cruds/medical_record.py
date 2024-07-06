@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import medical_record as model_medical_record
+from models import medical_record as model_medical_record,patient as model_patient
 from schemas import medical_record as schema_medical_record
 from typing import List
 
@@ -40,3 +40,8 @@ def delete_medical_record(db: Session, medical_record_id: int):
     db.delete(db_medical_record)
     db.commit()
     return db_medical_record
+
+def check_medical_child(db:Session,medical_record_id:int)->bool:
+    if db.query(model_patient.Patient).filter(model_patient.Patient.medical_record_id==medical_record_id).first():
+        return True
+    return False
