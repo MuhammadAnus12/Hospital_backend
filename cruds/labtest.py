@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import labtest as model_labtest
+from models import labtest as model_labtest,patient as model_patient,labtechnician as model_labtechnician
 from schemas import labtest as schema_labtest
 from typing import List
 
@@ -10,6 +10,18 @@ def create_labtest(db: Session, labtest: schema_labtest.LabTestCreate):
     db.commit()
     db.refresh(db_labtest)
     return db_labtest
+
+def check_patient(db:Session,patient_id:int):
+    db_patient=db.query(model_patient.Patient).filter(model_patient.Patient.id==patient_id).first()
+    if db_patient is None:
+        return None
+    return db_patient
+
+def check_lab_technician(db:Session,labtechnician_id:int):
+    db_lab_technician=db.query(model_labtechnician.LabTechnician).filter(model_labtechnician.LabTechnician.id==labtechnician_id).first()
+    if db_lab_technician is None:
+        return None
+    return db_lab_technician
 
 
 def get_labtests(db: Session, skip: int = 0, limit: int = 100):
