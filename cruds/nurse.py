@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import nurse as model_nurse
+from models import nurse as model_nurse,department as model_department
 from schemas import nurse as schema_nurse
 from typing import List
 
@@ -11,6 +11,12 @@ def create_nurse(db: Session, nurse: schema_nurse.NurseCreate):
     db.refresh(db_nurse)
     return db_nurse
 
+def check_department(db:Session,department_id:int):
+    db_department=db.query(model_department.Department).filter(model_department.Department.id==department_id).first()
+    if db_department is None:
+        return None
+    return db_department
+    
 
 def get_nurses(db: Session, skip: int = 0, limit: int = 100):
     return db.query(model_nurse.Nurse).offset(skip).limit(limit).all()
@@ -54,3 +60,4 @@ def search_nurse(db: Session, nurse: schema_nurse.SearchNurse):
     if db_nurse is None:
         return None
     return db_nurse
+
