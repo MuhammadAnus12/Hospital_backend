@@ -1,5 +1,8 @@
 from sqlalchemy.orm import Session
-from models import department as model_department
+from models import (department as model_department,
+                    doctor as model_doctor,
+                    nurse as model_nurse,
+                    room as model_room)
 from schemas import department as schema_department
 from typing import List
 
@@ -47,3 +50,12 @@ def search_department(db: Session, department: schema_department.SearchDepartmen
     if db_department is None:
         return None
     return db_department
+
+def check_department_child(db:Session,department_id:int)->bool:
+    if db.query(model_doctor.Doctor).filter(model_doctor.Doctor.department_id==department_id).first():
+        return True
+    if db.query(model_nurse.Nurse).filter(model_nurse.Nurse.department_id==department_id).first():
+        return True
+    if db.query(model_room.Room).filter(model_room.Room.department_id==department_id).first():
+        return True
+    return False

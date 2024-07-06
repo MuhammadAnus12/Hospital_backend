@@ -43,6 +43,9 @@ def delete_department(department_id: int, db: Session = Depends(get_db)):
     db_department = crud_department.get_department(db, department_id)
     if db_department is None:
         raise HTTPException(status_code=404, detail="Department not found")
+    db_department_in_child=crud_department.check_department_child(db,department_id)
+    if db_department_in_child is True:
+        raise HTTPException(status_code=404,detail="Department child exist")
     return crud_department.delete_department(db, department_id)
 
 @router.post("/department/search", response_model=schema_department.Department, tags=tags)
