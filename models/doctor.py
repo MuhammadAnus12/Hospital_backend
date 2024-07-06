@@ -16,7 +16,7 @@ class Doctor(Base):
     room_id = Column(Integer, ForeignKey('Room.id'))
     department_id = Column(Integer, ForeignKey('Department.id'))
 
-    departments=relationship('DoctorDepartment', back_populates='doctor')
+    department=relationship('Department',back_populates='doctors')
     room = relationship('Room', back_populates='doctors')
     appointments=relationship('Appointment', back_populates='doctor')
     treatments=relationship('Treatment', back_populates='doctor')
