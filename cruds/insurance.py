@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import insurance as model_insurance
+from models import insurance as model_insurance,patient as model_patient
 from schemas import insurance as schema_insurance
 from typing import List
 
@@ -40,3 +40,9 @@ def delete_insurance(db: Session, insurance_id: int):
     db.delete(db_insurance)
     db.commit()
     return db_insurance
+
+def check_insurance_child(db:Session,insurance_id:int)->bool:
+    if db.query(model_patient.Patient).filter(model_patient.Patient.insurance_id==insurance_id):
+        return True
+    return False
+

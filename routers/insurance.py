@@ -43,4 +43,7 @@ def delete_insurance(insurance_id: int, db: Session = Depends(get_db)):
     db_insurance = crud_insurance.get_insurance(db, insurance_id)
     if db_insurance is None:
         raise HTTPException(status_code=404, detail="Insurance not found")
+    db_pateint_child=crud_insurance.check_insurance_child(db,insurance_id)
+    if db_pateint_child is None:
+        raise HTTPException(status_code=404,detail="Insurance child exist")
     return crud_insurance.delete_insurance(db, insurance_id)
