@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from models import (doctor as model_doctor,
                     room as model_room, department as model_department,
-                    appointment as model_appointment, treatment as model_treatment
+                    appointment as model_appointment, treatment as model_treatment,
+                    head_of_department as model_head_of_department
                     )
 from schemas import doctor as schema_doctor
 from typing import List
@@ -77,5 +78,7 @@ def check_doctor_in_child(db: Session, doctor_id: int) -> bool:
     if db.query(model_appointment.Appointment).filter(model_appointment.Appointment.doctor_id == doctor_id).first():
         return True
     if db.query(model_treatment.Treatment).filter(model_treatment.Treatment.doctor_id == doctor_id).first():
+        return True
+    if db.query(model_head_of_department.HeadOfDepartment).filter(model_head_of_department.HeadOfDepartment.doctor_id==doctor_id).first():
         return True
     return False
