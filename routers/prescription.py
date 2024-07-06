@@ -12,6 +12,14 @@ tags = ["Prescription"]
 
 @router.post("/prescription", response_model=schema_prescription.Prescription, tags=tags)
 def create_prescription(prescription: schema_prescription.PrescriptionCreate, db: Session = Depends(get_db)):
+    db_mediciation = crud_prescription.check_mediciation(
+        db, prescription.medication_id)
+    if db_mediciation is None:
+        raise HTTPException(status_code=404, detail="Mediciation Not Found")
+    db_treatment = crud_prescription.check_treatment(
+        db, prescription.treatment_id)
+    if db_treatment is None:
+        raise HTTPException(status_code=404, detail="Treatment Not Found")
     return crud_prescription.create_prescription(db, prescription)
 
 
@@ -36,10 +44,17 @@ def read_prescriptions(skip: int = 0, limit: int = 100, db: Session = Depends(ge
 
 @router.put("/prescriptions", response_model=schema_prescription.Prescription, tags=tags)
 def update_prescription(prescription: schema_prescription.PrescriptionUpdate, db: Session = Depends(get_db)):
-
     db_prescription = crud_prescription.get_prescription(db, prescription.id)
     if db_prescription is None:
         raise HTTPException(status_code=404, detail="Prescription not found")
+    db_mediciation = crud_prescription.check_mediciation(
+        db, prescription.medication_id)
+    if db_mediciation is None:
+        raise HTTPException(status_code=404, detail="Mediciation Not Found")
+    db_treatment = crud_prescription.check_treatment(
+        db, prescription.treatment_id)
+    if db_treatment is None:
+        raise HTTPException(status_code=404, detail="Treatment Not Found")
     db_prescription = crud_prescription.update_prescription(db, prescription)
     return db_prescription
 
