@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import payment as model_payment
+from models import payment as model_payment,invoice as model_invoice
 from schemas import payment as schema_payment
 from typing import List
 
@@ -9,6 +9,12 @@ def create_payment(db: Session, payment: schema_payment.PaymentCreate):
     db.commit()
     db.refresh(db_payment)
     return db_payment
+
+def check_invoice(db:Session,invoice_id:int):
+    db_invoice=db.query(model_invoice.Invoice).filter(model_invoice.Invoice.id==invoice_id)
+    if db_invoice is None:
+        return None
+    return db_invoice
 
 def get_payments(db: Session, skip: int = 0, limit: int = 100):
     return db.query(model_payment.Payment).offset(skip).limit(limit).all()

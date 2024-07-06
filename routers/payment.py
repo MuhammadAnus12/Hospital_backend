@@ -10,6 +10,9 @@ tags = ["Payment"]
 
 @router.post("/payment", response_model=schema_payment.Payment, tags=tags)
 def create_payment(payment: schema_payment.PaymentCreate, db: Session = Depends(get_db)):
+    db_invoice=crud_payment.check_invoice(db,payment.invoice_id)
+    if db_invoice is None:
+        raise HTTPException(status_code=404,detail="Invoice Not found")
     return crud_payment.create_payment(db, payment)
 
 @router.get("/payment/{payment_id}", response_model=schema_payment.Payment, tags=tags)
@@ -34,6 +37,9 @@ def update_payment(payment: schema_payment.PaymentUpdate, db: Session = Depends(
     db_payment = crud_payment.get_payment(db, payment.id)
     if db_payment is None:
         raise HTTPException(status_code=404, detail="Payment not found")
+    db_invoice=crud_payment.check_invoice(db,payment.invoice_id)
+    if db_invoice is None:
+        raise HTTPException(status_code=404,detail="Invoice Not found")
     db_payment = crud_payment.update_payment(db, payment)
     return db_payment
 
