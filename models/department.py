@@ -11,4 +11,4 @@ class Department(Base):
     doctors = relationship('Doctor', back_populates='department')
     nurses = relationship('Nurse', back_populates='department')
     rooms = relationship('Room', back_populates='department')
-    headofdepartment=relationship('HeadOfDepartment',back_populates='department')
+    headofdepartment=relationship('HeadOfDepartment',uselist=False,back_populates='department')
