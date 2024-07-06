@@ -12,6 +12,12 @@ tags = ["Appointment"]
 
 @router.post("/appointment", response_model=schema_appointment.Appointment, tags=tags)
 def create_appointment(appointment: schema_appointment.AppointmentCreate, db: Session = Depends(get_db)):
+    db_doctor=crud_appointment.check_doctor(db,appointment.doctor_id)
+    if db_doctor is None:
+        raise HTTPException(status_code=404,detail="Doctor not found")
+    db_patient=crud_appointment.check_patient(db,appointment.patient_id)
+    if db_patient is None:
+        raise HTTPException(status_code=404,detail="Patient not found")
     return crud_appointment.create_appointment(db, appointment)
 
 
@@ -39,6 +45,12 @@ def update_appointment(appointment: schema_appointment.AppointmentUpdate, db: Se
     db_appointment = crud_appointment.get_appointment(db, appointment.id)
     if db_appointment is None:
         raise HTTPException(status_code=404, detail="Appointment not found")
+    db_doctor=crud_appointment.check_doctor(db,appointment.doctor_id)
+    if db_doctor is None:
+        raise HTTPException(status_code=404,detail="Doctor not found")
+    db_patient=crud_appointment.check_patient(db,appointment.patient_id)
+    if db_patient is None:
+        raise HTTPException(status_code=404,detail="Patient not found")
     db_appointment = crud_appointment.update_appointment(db, appointment)
     return db_appointment
 
