@@ -9,9 +9,14 @@ from schemas import room as schema_room
 router = APIRouter()
 tags = ["Room"]
 
+
 @router.post("/room", response_model=schema_room.Room, tags=tags)
 def create_room(room: schema_room.RoomCreate, db: Session = Depends(get_db)):
+    db_department = crud_room.check_department(db, room.department_id)
+    if db_department is None:
+        raise HTTPException(status_code=404, detail="Department Not found")
     return crud_room.create_room(db, room)
+
 
 @router.get("/room/{room_id}", response_model=schema_room.Room, tags=tags)
 def read_room(room_id: int, db: Session = Depends(get_db)):
@@ -19,6 +24,7 @@ def read_room(room_id: int, db: Session = Depends(get_db)):
     if db_room is None:
         raise HTTPException(status_code=404, detail="Room not found")
     return db_room
+
 
 @router.get("/rooms", response_model=schema_room.Rooms, tags=tags)
 def read_rooms(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -29,17 +35,25 @@ def read_rooms(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
         "total_count": total_count
     }
 
+
 @router.put("/room", response_model=schema_room.Room, tags=tags)
 def update_room(room: schema_room.RoomUpdate, db: Session = Depends(get_db)):
     db_room = crud_room.get_room(db, room.id)
     if db_room is None:
         raise HTTPException(status_code=404, detail="Room not found")
+    db_department = crud_room.check_department(db, room.department_id)
+    if db_department is None:
+        raise HTTPException(status_code=404, detail="Department Not found")
     db_room = crud_room.update_room(db, room)
     return db_room
+
 
 @router.delete("/room/{room_id}", tags=tags)
 def delete_room(room_id: int, db: Session = Depends(get_db)):
     db_room = crud_room.get_room(db, room_id)
     if db_room is None:
         raise HTTPException(status_code=404, detail="Room not found")
+    db_room_child=crud_room.check_room_child(db,room_id)
+    if db_room_child is True:
+        raise HTTPException(status_code=404,detail="Room child Exist")
     return crud_room.delete_room(db, room_id)
