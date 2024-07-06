@@ -42,5 +42,8 @@ def delete_medication(medication_id: int, db: Session = Depends(get_db)):
     db_medication = crud_medication.get_medication(db, medication_id)
     if db_medication is None:
         raise HTTPException(status_code=404, detail="Medication not found")
+    db_mediciation_child=crud_medication.check_mediciation_in_child(db,medication_id)
+    if db_mediciation_child is True:
+        raise HTTPException(status_code=404,detail="Medicaition child exist")
     return crud_medication.delete_medication(db, medication_id)
 

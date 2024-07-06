@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from models import mediciaton as model_medication
+from models import (mediciaton as model_medication,
+                    prescription as model_prescription)
 from schemas import mediciation as schema_medication
 from typing import List
 
@@ -40,3 +41,7 @@ def delete_medication(db: Session, medication_id: int):
     db.commit()
     return db_medication
 
+def check_mediciation_in_child(db:Session,medication_id: int):
+    if db.query(model_prescription.Prescription).filter(model_prescription.Prescription.medication_id==medication_id).first():
+        return True
+    return False
