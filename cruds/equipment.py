@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import equipment as model_equipment
+from models import equipment as model_equipment,room as model_room
 from schemas import equipment as schema_equipment
 from typing import List
 
@@ -12,6 +12,12 @@ def create_equipment(db: Session, equipment: schema_equipment.EquipmentCreate):
 
 def get_equipments(db: Session, skip: int = 0, limit: int = 100):
     return db.query(model_equipment.Equipment).offset(skip).limit(limit).all()
+
+def check_room(db:Session,room_id:int):
+    db_room=db.query(model_room.Room).filter(model_room.Room.id==room_id).first()
+    if db_room is None:
+        return None
+    return db_room
 
 def get_equipment(db: Session, equipment_id: int):
     db_equipment = db.query(model_equipment.Equipment).filter(

@@ -11,6 +11,9 @@ tags = ["Equipment"]
 
 @router.post("/equipment", response_model=schema_equipment.Equipment, tags=tags)
 def create_equipment(equipment: schema_equipment.EquipmentCreate, db: Session = Depends(get_db)):
+    db_room=crud_equipment.check_room(db,equipment.room_id)
+    if db_room is None:
+        raise HTTPException(status_code=404,detail="Room not found")
     return crud_equipment.create_equipment(db, equipment)
 
 @router.get("/equipment/{equipment_id}", response_model=schema_equipment.Equipment, tags=tags)
@@ -34,6 +37,9 @@ def update_equipment(equipment: schema_equipment.EquipmentUpdate, db: Session = 
     db_equipment = crud_equipment.get_equipment(db, equipment.id)
     if db_equipment is None:
         raise HTTPException(status_code=404, detail="Equipment not found")
+    db_room=crud_equipment.check_room(db,equipment.room_id)
+    if db_room is None:
+        raise HTTPException(status_code=404,detail="Room not found")
     db_equipment = crud_equipment.update_equipment(db, equipment)
     return db_equipment
 
