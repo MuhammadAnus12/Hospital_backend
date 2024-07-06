@@ -7,7 +7,8 @@ from routers import (patient, doctor, nurse,
                      labtechnician,invoice,
                      payment,room,ward,
                      supplier,equipment,medical_record,
-                     insurance,emergency)
+                     insurance,emergency,
+                     head_of_department)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Hospital Management System",description="DBMS Project")
@@ -33,5 +34,5 @@ app.include_router(equipment.router)
 app.include_router(medical_record.router)
 app.include_router(insurance.router)
 app.include_router(emergency.router)
-
+app.include_router(head_of_department.router)
 

@@ -20,5 +20,5 @@ class Doctor(Base):
     room = relationship('Room', back_populates='doctors')
     appointments=relationship('Appointment', back_populates='doctor')
     treatments=relationship('Treatment', back_populates='doctor')
-    headofdepartment=relationship('HeadOfDepartment',uselist=False,relationship='doctor')
+    headofdepartment=relationship('HeadOfDepartment',uselist=False,back_populates='doctor')
     
