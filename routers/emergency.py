@@ -42,5 +42,8 @@ def delete_emergency(emergency_id: int, db: Session = Depends(get_db)):
     db_emergency = crud_emergency.get_emergency(db, emergency_id)
     if db_emergency is None:
         raise HTTPException(status_code=404, detail="Emergency not found")
+    db_emergency_child=crud_emergency.check_emergency_child(db,emergency_id)
+    if db_emergency_child is True:
+        raise HTTPException(status_code=404,detail="Emergency Child Exist")
     return crud_emergency.delete_emergency(db, emergency_id)
 

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import emergency as model_emergency
+from models import emergency as model_emergency,patient as model_patient
 from schemas import emergency as schema_emergency
 from typing import List
 
@@ -39,3 +39,8 @@ def delete_emergency(db: Session, emergency_id: int):
     db.delete(db_emergency)
     db.commit()
     return db_emergency
+
+def check_emergency_child(db:Session,emergency_id:int)->bool:
+    if db.query(model_patient.Patient).filter(model_patient.Patient.emergency_id==emergency_id).first():
+        return True
+    return False
