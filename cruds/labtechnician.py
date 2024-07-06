@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import labtechnician as model_labtechnician
+from models import labtechnician as model_labtechnician,labtest as model_labtest
 from schemas import labtechnician as schema_labtechnician
 from typing import List
 
@@ -45,3 +45,8 @@ def delete_labtechnician(db: Session, labtechnician_id: int):
     db.delete(db_labtechnician)
     db.commit()
     return db_labtechnician
+
+def check_lab_technician_child(db:Session,labtechnician_id:int)->bool:
+    if db.query(model_labtest.LabTest).filter(model_labtest.LabTest.lab_technician_id==labtechnician_id).first():
+        return True
+    return False

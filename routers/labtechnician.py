@@ -43,4 +43,7 @@ def delete_labtechnician(labtechnician_id: int, db: Session = Depends(get_db)):
     db_labtechnician = crud_labtechnician.get_labtechnician(db, labtechnician_id)
     if db_labtechnician is None:
         raise HTTPException(status_code=404, detail="LabTechnician not found")
+    db_labtechnician_child=crud_labtechnician.check_lab_technician_child(db,labtechnician_id)
+    if db_labtechnician_child is True:
+        raise HTTPException(status_code=404,detail="Lab Technician exist")
     return crud_labtechnician.delete_labtechnician(db, labtechnician_id)
